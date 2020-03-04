@@ -1,2 +1,2 @@
-# SingleStage6DPose
-Single Stage Network for Object 6D Pose Estimation
+# single-stage-pose
+Single-Stage 6D Object Pose Estimation, CVPR 2020
