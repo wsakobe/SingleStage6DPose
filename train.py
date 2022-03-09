@@ -69,7 +69,7 @@ def compute_loss(pt_3d, predQ, predT, gtQ, gtT):
 def train():
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
-    tag = 'xydxdy'
+    tag = 'saw'
 
     logger = SummaryWriter('logs_' + tag)
 
@@ -77,7 +77,7 @@ def train():
     model = SimplePnPNet(nIn=4)
     model = model.cuda()
 
-    desired_epoch = 200
+    desired_epoch = 20
     batch_size = 32
     learning_rate = 1e-4
     alpha = 1
@@ -91,7 +91,8 @@ def train():
     # 
     translation_min = torch.FloatTensor(dataset.translation_min)
     translation_max = torch.FloatTensor(dataset.translation_max)
-    # 
+    #
+
     model.train()
     for epoch in range(desired_epoch):
         # Update scheduler
@@ -153,9 +154,11 @@ def train():
             logger.add_scalar('loss', loss, epoch*len(data_loader) + batch_idx)
 
             if batch_idx % 10 == 0:
-                print('epoch %d/%d, batch %d/%d, lr %f, %f' % (epoch, desired_epoch, batch_idx, len(data_loader), scheduler.get_lr()[0], loss))
+                print('epoch %d/%d, batch %d/%d, lr %f, %f' % (epoch + 1, desired_epoch, batch_idx, len(data_loader), scheduler.get_lr()[0], loss))
         # 
         torch.save(model.state_dict(), tag + '.pth')
+
+    logger.add_graph(model, (inData,))
 
 if __name__ == "__main__":
     train()
